@@ -1,0 +1,25 @@
+replicaCountBackend: 2
+replicaCountFrontend: 2
+
+backend:
+  image:
+    repository: DOCKERHUB_USERNAME/todo-backend
+    tag: latest
+  port: 5000
+  resources: {}
+
+frontend:
+  image:
+    repository: DOCKERHUB_USERNAME/todo-frontend
+    tag: latest
+  port: 8080
+  resources: {}
+
+postgres:
+  image:
+    repository: postgres
+    tag: "15"
+  postgresUser: todo_user
+  postgresPassword: todo_pass
+  postgresDB: todo
+  storageSize: 5Gi

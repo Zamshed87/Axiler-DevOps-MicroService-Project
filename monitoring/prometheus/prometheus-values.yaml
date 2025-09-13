@@ -1,0 +1,5 @@
+# monitoring/prometheus-values.yaml (partial)
+prometheus:
+  prometheusSpec:
+    scrapeInterval: "30s"
+    scrapeTimeout: "10s"

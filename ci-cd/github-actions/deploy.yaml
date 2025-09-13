@@ -1,2 +1,61 @@
-name: Deploy to EKS
-...
+# ci-cd/github-actions/deploy.yaml
+name: CI/CD Build & Publish
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build backend image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./apps/backend
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/todo-backend:latest
+
+      - name: Build frontend image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./apps/frontend
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/todo-frontend:latest
+
+      - name: Trivy scan backend
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/todo-backend:latest
+
+      - name: Trivy scan frontend
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/todo-frontend:latest
+
+      - name: Commit helm values update (optional)
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          sed -i "s|DOCKERHUB_USERNAME/todo-backend:.*|${{ secrets.DOCKERHUB_USERNAME }}/todo-backend:latest|g" kubernetes/helm-charts/todo-chart/values.yaml
+          sed -i "s|DOCKERHUB_USERNAME/todo-frontend:.*|${{ secrets.DOCKERHUB_USERNAME }}/todo-frontend:latest|g" kubernetes/helm-charts/todo-chart/values.yaml
+          git add kubernetes/helm-charts/todo-chart/values.yaml
+          git commit -m "ci: update helm values with latest image" || echo "no changes"
+          git push
