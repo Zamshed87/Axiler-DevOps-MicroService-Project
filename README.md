@@ -45,7 +45,7 @@ This project demonstrates a DevOps infrastructure setup showcasing expertise in 
 ## Project Structure
 
 ```
-your-project/
+Axiler-DevOps-MicroService-Project/
 ├── terraform/                # Infrastructure as Code
 ├── kubernetes/               # Helm charts, manifests, ArgoCD apps
 ├── ci-cd/                    # CI/CD pipeline configuration
