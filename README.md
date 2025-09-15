@@ -10,6 +10,8 @@ This project demonstrates a DevOps infrastructure setup showcasing expertise in 
 
 ## Architecture Diagram
 
+![EKS Cluster Created](images/eks_cluster_created.png)
+
 ```
           +----------------------+
           |      AWS EKS         |
@@ -57,12 +59,16 @@ your-project/
 
 ### 1️⃣ Verify Kubernetes Cluster Access
 
+![Kubectl Setup](images/kubectl_setup.png)
+
 ```bash
 aws eks update-kubeconfig --region us-east-1 --name axiler-eks-dev
 kubectl get nodes
 ```
 
 ### 2️⃣ Install ArgoCD
+
+![ArgoCD Installed](images/installed_argo.png)
 
 ```bash
 kubectl create namespace argocd
@@ -90,11 +96,16 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 
 #### Using Helm (Quick Test)
 
+![Helm Applied](images/helm_applied.png)
+
 ```bash
 helm install todo ./kubernetes/helm-charts/todo-chart
 ```
 
 #### Using ArgoCD (Recommended)
+
+![Docker Image Build & Push](images/docker-image-build-push.png)
+![Pushed Image to DockerHub](images/pushed-image-dockerhub.png)
 
 ```bash
 kubectl apply -f kubernetes/argocd/applications/backend-app.yaml
@@ -109,6 +120,8 @@ kubectl get svc -A
 
 #### Scale Node Group to 0
 
+![Nodes and Nodegroup Created](images/nodes_and_nodegroup_created.png)
+
 ```bash
 aws eks update-nodegroup-config \
     --cluster-name axiler-eks-dev \
@@ -117,6 +130,9 @@ aws eks update-nodegroup-config \
 ```
 
 #### Manually Scale Node Group
+
+![Created Auto Scaling Group](images/created_auto-scaling%20group.png)
+![EC2 Instance Created](images/ec2_instance_created.png)
 
 ```bash
 aws autoscaling update-auto-scaling-group \
@@ -144,6 +160,8 @@ aws autoscaling update-auto-scaling-group \
 ---
 
 ## Challenges & Justification
+
+![Resource Shortage](images/resource-shortage.png)
 
 * **Resource Constraints:** Free-tier AWS instances (t3.micro/t3.medium) could not handle the full deployment due to **too many pods**. This project requires a minimum of 2-3 nodes with t3.large or higher for proper functioning.
 * **Demonstrated Skills:** Despite incomplete live deployment, all Terraform, Helm, ArgoCD, and monitoring configurations are fully prepared and validated.
