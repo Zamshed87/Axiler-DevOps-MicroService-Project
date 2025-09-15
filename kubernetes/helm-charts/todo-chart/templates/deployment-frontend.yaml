@@ -2,15 +2,17 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "todo.fullname" . }}-frontend
+  labels:
+    app: {{ include "todo.fullname" . }}-frontend
 spec:
   replicas: {{ .Values.replicaCountFrontend }}
   selector:
     matchLabels:
-      app: todo-frontend
+      app: {{ include "todo.fullname" . }}-frontend
   template:
     metadata:
       labels:
-        app: todo-frontend
+        app: {{ include "todo.fullname" . }}-frontend
     spec:
       containers:
         - name: frontend
@@ -20,4 +22,5 @@ spec:
           env:
             - name: BACKEND_URL
               value: "http://{{ include "todo.fullname" . }}-backend:{{ .Values.backend.port }}"
-          resources: {{ toYaml .Values.frontend.resources | nindent 10 }}
+          resources:
+{{ toYaml .Values.frontend.resources | nindent 12 }}

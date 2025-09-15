@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/DOCKERHUB_USERNAME/your-project'
+    repoURL: 'https://github.com/Zamshed87/Axiler-DevOps-MicroService-Project'
     targetRevision: HEAD
     path: kubernetes/helm-charts/todo-chart
   destination:

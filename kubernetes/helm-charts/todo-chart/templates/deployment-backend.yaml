@@ -2,15 +2,17 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "todo.fullname" . }}-backend
+  labels:
+    app: {{ include "todo.fullname" . }}-backend
 spec:
   replicas: {{ .Values.replicaCountBackend }}
   selector:
     matchLabels:
-      app: todo-backend
+      app: {{ include "todo.fullname" . }}-backend
   template:
     metadata:
       labels:
-        app: todo-backend
+        app: {{ include "todo.fullname" . }}-backend
     spec:
       containers:
         - name: backend
@@ -19,7 +21,7 @@ spec:
             - containerPort: {{ .Values.backend.port }}
           env:
             - name: POSTGRES_HOST
-              value: {{ printf "%s" (include "todo.fullname" .) }}-postgres
+              value: "{{ include "todo.fullname" . }}-postgres"
             - name: POSTGRES_PORT
               value: "5432"
             - name: POSTGRES_DB
@@ -28,4 +30,5 @@ spec:
               value: "{{ .Values.postgres.postgresUser }}"
             - name: POSTGRES_PASSWORD
               value: "{{ .Values.postgres.postgresPassword }}"
-          resources: {{ toYaml .Values.backend.resources | nindent 10 }}
+          resources:
+{{ toYaml .Values.backend.resources | nindent 12 }}
